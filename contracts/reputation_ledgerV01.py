@@ -23,10 +23,8 @@ POSITIVE_KINDS = (
 # Besar delta ditentukan oleh verdict yang disepakati validator.
 # Delta TIDAK lagi diisi manual oleh source.
 VERDICT_MAGNITUDE = {
-    "INVALID": 0,   # bukti tidak mendukung outcome -> ditolak
-    "WEAK": 25,     # bukti tidak langsung / sebagian
-    "SOLID": 60,    # bukti jelas mendukung
-    "STRONG": 100,  # bukti spesifik dan tidak ambigu
+    "INVALID": 0,    # bukti tidak mendukung outcome -> ditolak
+    "VERIFIED": 60,  # bukti jelas mengonfirmasi outcome
 }
 
 HALF_LIFE = 180 * 24 * 60 * 60
@@ -206,19 +204,14 @@ class ReputationLedger(gl.Contract):
                 "do NOT lower the verdict because it is missing. Judge only "
                 "the event itself (e.g. repository, PR number, merged status, "
                 "pass/fail result).\n"
-                "verdict must be exactly one of INVALID, WEAK, SOLID, STRONG:\n"
-                "  INVALID = the page contradicts the event, or does not "
+                "verdict must be exactly one of INVALID or VERIFIED:\n"
+                "  INVALID  = the page contradicts the event, or does not "
                 "mention the event at all\n"
-                "  WEAK    = the event is only indirectly or partially supported\n"
-                "  SOLID   = the event is clearly confirmed by the page\n"
-                "  STRONG  = the event is confirmed with specific, concrete, "
-                "unambiguous details\n"
-                "Use INVALID only when the event is contradicted or absent. If "
-                "the event is confirmed but you are unsure about the level, "
-                "choose the LOWER of the confirmed levels (WEAK or SOLID), "
-                "never INVALID.\n\n"
+                "  VERIFIED = the page clearly confirms the event\n"
+                "Do not grade the strength of the evidence; only decide "
+                "whether the event is confirmed or not.\n\n"
                 "Return ONLY JSON:\n"
-                '{"verdict": "SOLID", "reason": "brief explanation"}'
+                '{"verdict": "VERIFIED", "reason": "brief explanation"}'
             )
 
             res = gl.nondet.exec_prompt(prompt, response_format="json")
